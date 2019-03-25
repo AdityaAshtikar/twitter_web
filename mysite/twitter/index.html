@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <title>Sentiment Analysis using Twitter API</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="jumbotron">Search through twitter to analyze tweets</h1><br>
+            <form action="{% url 'tweets' %}" method="GET">
+                <input type="text" class="form-control" name="searchQuery" placeholder="Enter keyword" size="50" required autofocus=true><br><br>
+                <input type="number" id="count" class="form-control" name="count" min="0" max="200" placeholder="number of tweets to process (less than 200)" required style="width: 100%;"><br><br>
+                <input type="submit" class="form-control btn btn-primary" name="submit" value="Submit">
+            </form>
+        </div>
+
+    </body>
+</html>
