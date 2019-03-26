@@ -105,26 +105,28 @@ def main(request):
     # HttpResponse(tweets)
     tcount = 1
     response.write("<h3><a class='btn btn-info' href=/twitter/>Search Again..</a></h3>")
-    if len(tweets) <= 0:
+    if len(tweets) <= 0 and count > 200:
         return redirect(index)
     else:
         response.write("<h2 style='color: purple;'>Number of clean tweets rendered: <b>{}</b></h2><p>" . format(len(tweets)))
     response.write("<hr>")
     for tweet in tweets:
-        response.write("<p>{}.) " .format(tcount))
-        response.write("<h3><span style='color: grey'>Text: </span><b style='color: blue'>{}</b></h3><p>". format(tweet['text']))
+        response.write("<div class='card '>")
+        response.write("<p class='card-header'>{}.) " .format(tcount))
+        response.write("<div class='card-header'><span style='color: grey'>Text: </span><b style='color: blue'>{}</b></div><p>". format(tweet['text']))
         tcount += 1
-        response.write("<h4><span style='color: grey'>Sentiment: </span><b style='color: black'><u>{}</u></b></h4><p>". format(tweet['sentiment']))
-        response.write("<h4><span style='color: grey'>Username: </span><b style='color: black'><u>{}</u></b></h4><p>". format(tweet['username']))
-        response.write("<h4><span style='color: grey'>Created At: </span><b style='color: black'><u>{}</u></b></h4><p>". format(tweet['created_at']))
-        response.write("<h4><span style='color: grey'>Location: </span><b style='color: black'><u>{}</u></b></h4><p>". format(tweet['location']))
+        response.write("<div class='card-body'><span style='color: grey'>Sentiment: </span><b style='color: black'><u>{}</u></b></div>". format(tweet['sentiment']))
+        response.write("<div class='card-body'><span style='color: grey'>Username: </span><b style='color: black'>{}</b></div>". format(tweet['username']))
+        response.write("<div class='card-body'><span style='color: grey'>Created At: </span><b style='color: black'>{}</b></div>". format(tweet['created_at']))
+        response.write("<h5 class='card-footer'><span style='color: grey'>Location: </span><b style='color: black'><u>{}</u></b></h5>". format(tweet['location']))
+        response.write("</div>")
         response.write("<hr>")
     # picking positive tweets from tweets 
     ptweets = [tweet for tweet in tweets if tweet['sentiment'] == 'positive'] 
-    p=(100*len(ptweets)/len(tweets))
+    # p=(100*len(ptweets)/len(tweets))
     # picking negative tweets from tweets 
     ntweets = [tweet for tweet in tweets if tweet['sentiment'] == 'negative']
-    n=(100*len(ntweets)/len(tweets))
+    # n=(100*len(ntweets)/len(tweets))
     nu_tweets = (len(tweets) - len(ntweets) - len(ptweets))
     # percentage of positive tweets 
     response.write("<hr>")
