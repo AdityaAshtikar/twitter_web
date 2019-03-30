@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
-from clint.textui import colored
+from mysite.settings import STATIC_URL as STATIC
 import re 
 import tweepy 
 from tweepy import OAuthHandler 
@@ -56,7 +56,7 @@ class TwitterClient(object):
         else: 
             return 'negative'
   
-    def get_tweets(self, query, count = 10): 
+    def get_tweets(self, query, count = 10, typeOfTweets = 'mixed'): 
         ''' 
         Main function to fetch tweets and parse them. 
         '''
@@ -64,7 +64,7 @@ class TwitterClient(object):
         tweets = []
         try: 
             # call twitter api to fetch tweets 
-            fetched_tweets = self.api.search(q = query, count = count) 
+            fetched_tweets = self.api.search(q = query + "-filter:retweets", count = count, result_type = typeOfTweets)
   
             # parsing tweets one by one 
             for tweet in fetched_tweets: 
@@ -78,6 +78,9 @@ class TwitterClient(object):
                 parsed_tweet['created_at'] = tweet.created_at
                 parsed_tweet['username'] = tweet.user.screen_name
                 parsed_tweet['location'] = tweet.user.location
+                # parsed_tweet['likes'] = tweet._json['favorite_count']
+                # parsed_tweet['likes'] = tweet.user['entities']['favourites_count']
+                parsed_tweet['likes'] = tweet.favorite_count
 
                 # appending parsed tweet to tweets list 
                 if tweet.retweet_count > 0: 
@@ -98,31 +101,58 @@ def main(request):
     response = HttpResponse()
     query = request.GET['searchQuery']
     count = request.GET['count']
+    typeOfTweets = request.GET['typeOfTweets']
     response.write("<html><head><title>Search Results: {}</title><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'></head><body><div class=container>" . format(query))
     response.write("<h3>Search results for: <em>{}</em></h3><hr>" . format(query))
     # calling function to get tweets 
-    tweets = api.get_tweets(query, count)
+    tweets = api.get_tweets(query, count, typeOfTweets)
     # HttpResponse(tweets)
     tcount = 1
     response.write("<h3><a class='btn btn-info' href=/twitter/>Search Again..</a></h3>")
-    if len(tweets) <= 0 and count > 200:
+    if len(tweets) <= 0 and int(count) > int(100) and typeOfTweets == 'type':
         return redirect(index)
     else:
         response.write("<h2 style='color: purple;'>Number of clean tweets rendered: <b>{}</b></h2><p>" . format(len(tweets)))
-    response.write("<hr>")
+    response.write("<hr>") 
+    positiveLikes = 0
+    negativeLikes = 0
+    positiveLikesPercent = 0
+    negativeLikesPercent = 0
     for tweet in tweets:
+        # average of positive and negative tweets for predictability and giving colors
+        if tweet['sentiment'] == 'positive':
+            sentimentColor = 'green'
+            positiveLikes = positiveLikes + tweet['likes']
+        elif tweet['sentiment'] == 'negative':
+            sentimentColor = 'red'
+            negativeLikes = negativeLikes + tweet['likes']
+        else:
+            sentimentColor = 'yellow'
+        totalLikes = positiveLikes + negativeLikes
+        if not positiveLikes == 0:
+            positiveLikesPercent = (positiveLikes/totalLikes) * 100
+        if not negativeLikes == 0:
+            negativeLikesPercent = (negativeLikes/totalLikes) * 100
         response.write("<div class='card '>")
         response.write("<p class='card-header'>{}.) " .format(tcount))
         response.write("<div class='card-header'><span style='color: grey'>Text: </span><b style='color: blue'>{}</b></div><p>". format(tweet['text']))
         tcount += 1
-        response.write("<div class='card-body'><span style='color: grey'>Sentiment: </span><b style='color: black'><u>{}</u></b></div>". format(tweet['sentiment']))
+        response.write("<div class='card-body'><span style='color: grey'>Sentiment: </span><b style='color: " + sentimentColor + "'><u>{}</u></b></div>". format(tweet['sentiment']))
         response.write("<div class='card-body'><span style='color: grey'>Username: </span><b style='color: black'>{}</b></div>". format(tweet['username']))
         response.write("<div class='card-body'><span style='color: grey'>Created At: </span><b style='color: black'>{}</b></div>". format(tweet['created_at']))
-        response.write("<h5 class='card-footer'><span style='color: grey'>Location: </span><b style='color: black'><u>{}</u></b></h5>". format(tweet['location']))
+        response.write("<div class='card-footer'>")
+        response.write("<h5><span style='color: grey'>Location: </span><b style='color: black'><u>{}</u></b></h5>". format(tweet['location']))
+        response.write("<h5 style='float: right;'><span style='color: grey'>Likes: </span><b style='color: black'><u>{}</u></b></h5>". format(tweet['likes']))
+        response.write("</div>")
         response.write("</div>")
         response.write("<hr>")
+    response.write("<h4>Predictability</h4><br>")
+    response.write("<img src='" + STATIC + "green.png' height=35 width={}%>" . format(positiveLikesPercent))
+    response.write("<img src='" + STATIC + "red.jpg' height=35 width={}%><br><br>" . format(negativeLikesPercent))
+    response.write("<span style='color: green;'>Likes for positive tweets: {} ( {}% )</span><br>" . format(positiveLikes, positiveLikesPercent))
+    response.write("<span style='color: red;'>Likes for negative tweets: {} ( {}% )</span>" . format(negativeLikes, negativeLikesPercent))
     # picking positive tweets from tweets 
-    ptweets = [tweet for tweet in tweets if tweet['sentiment'] == 'positive'] 
+    ptweets = [tweet for tweet in tweets if tweet['sentiment'] == 'positive']
     # p=(100*len(ptweets)/len(tweets))
     # picking negative tweets from tweets 
     ntweets = [tweet for tweet in tweets if tweet['sentiment'] == 'negative']
