@@ -146,9 +146,12 @@ def main(request):
         response.write("</div>")
         response.write("</div>")
         response.write("<hr>")
-    response.write("<h4>Predictability</h4><br>")
-    response.write("<img src='" + STATIC + "green.png' height=35 width={}%>" . format(positiveLikesPercent))
-    response.write("<img src='" + STATIC + "red.jpg' height=35 width={}%><br><br>" . format(negativeLikesPercent))
+    response.write("<h4>Predictability: </h4><br>")
+    if positiveLikesPercent == 0 and negativeLikesPercent == 0:
+        response.write("<b>Not predictable!</b><br><br>")
+    else:
+        response.write("<img src='" + STATIC + "green.png' height=35 width={}%>" . format(positiveLikesPercent))
+        response.write("<img src='" + STATIC + "red.jpg' height=35 width={}%><br><br>" . format(negativeLikesPercent))
     response.write("<span style='color: green;'>Likes for positive tweets: {} ( {}% )</span><br>" . format(positiveLikes, positiveLikesPercent))
     response.write("<span style='color: red;'>Likes for negative tweets: {} ( {}% )</span>" . format(negativeLikes, negativeLikesPercent))
     # picking positive tweets from tweets 
