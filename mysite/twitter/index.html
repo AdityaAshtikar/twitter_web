@@ -8,12 +8,12 @@
             <h1 class="jumbotron">Search through twitter to analyze tweets</h1><br>
             <form action="{% url 'tweets' %}" method="GET">
                 <input type="text" class="form-control" name="searchQuery" placeholder="Enter keyword" size="50" required autofocus=true autocomplete="off"><br><br>
-                <input type="number" id="count" class="form-control" name="count" min="0" max="100" placeholder="number of tweets to process (less than 100)" required style="width: 100%;"><br><br>
-                <select name="typeOfTweets" required class="form-control">
-                    <option selected disabled>Type</option>
+                <input type="number" id="count" class="form-control" name="count" min="0" max="100" placeholder="number of tweets to process (less than 100)" required style="width: 100%;"><br>
+                <label for="type" class="mr-2 d-inline-block"><small><strong>Type: </strong></small></label>
+                <select id="type" name="typeOfTweets" required class="form-control">
+                    <option value="mixed" selected>Mixed</option>
                     <option value="popular">Most Popular</option>
                     <option value="recent">Most Recent</option>
-                    <option value="mixed">Mixed</option>
                 </select><br>
                 <input type="submit" class="form-control btn btn-primary" name="submit" value="Submit">
             </form>

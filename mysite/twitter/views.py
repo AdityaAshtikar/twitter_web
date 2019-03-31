@@ -109,7 +109,7 @@ def main(request):
     # HttpResponse(tweets)
     tcount = 1
     response.write("<h3><a class='btn btn-info' href=/twitter/>Search Again..</a></h3>")
-    if len(tweets) <= 0 and int(count) > int(100) and typeOfTweets == 'type':
+    if len(tweets) <= 0 and int(count) > int(100):
         return redirect(index)
     else:
         response.write("<h2 style='color: purple;'>Number of clean tweets rendered: <b>{}</b></h2><p>" . format(len(tweets)))
