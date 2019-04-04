@@ -7,6 +7,9 @@ import tweepy
 from tweepy import OAuthHandler 
 from textblob import TextBlob 
 
+def index2(request):
+    return render(request, 'twitter/index2.html')
+
 def index(request):
     return render(request, 'twitter/index.html')
 
@@ -47,14 +50,22 @@ class TwitterClient(object):
         '''
         # create TextBlob object of passed tweet text 
         # HttpResponse(tweet)
+        '''
+        if analysis.sentiment.polarity >= 0.5:
+            if analysis.sentiment.polarity > 0:
+                pos_correct += 1
+        '''
+        threshold = 0.001
         analysis = TextBlob(self.clean_tweet(tweet)) 
         # set sentiment 
-        if analysis.sentiment.polarity > 0: 
-            return 'positive'
-        elif analysis.sentiment.polarity == 0: 
-            return 'neutral'
+        if analysis.sentiment.polarity >= threshold:
+            if analysis.sentiment.polarity > 0:
+                return 'positive'
+        elif analysis.sentiment.polarity <= -threshold: 
+            if analysis.sentiment.polarity <= 0:
+                return 'negative'
         else: 
-            return 'negative'
+            return 'neutral'
   
     def get_tweets(self, query, count = 10, typeOfTweets = 'mixed'): 
         ''' 
@@ -133,19 +144,50 @@ def main(request):
             positiveLikesPercent = (positiveLikes/totalLikes) * 100
         if not negativeLikes == 0:
             negativeLikesPercent = (negativeLikes/totalLikes) * 100
-        response.write("<div class='card '>")
-        response.write("<p class='card-header'>{}.) " .format(tcount))
-        response.write("<div class='card-header'><span style='color: grey'>Text: </span><b style='color: blue'>{}</b></div><p>". format(tweet['text']))
+        response.write("<div class='card'>")
+        response.write("<p class='card-header'>{}.) </p>" .format(tcount))
+        response.write("<div class='card-header'><span style='color: grey'>Text: </span><b style='color: blue'>{}</b></div>". format(tweet['text']))
         tcount += 1
-        response.write("<div class='card-body'><span style='color: grey'>Sentiment: </span><b style='color: " + sentimentColor + "'><u>{}</u></b></div>". format(tweet['sentiment']))
-        response.write("<div class='card-body'><span style='color: grey'>Username: </span><b style='color: black'>{}</b></div>". format(tweet['username']))
-        response.write("<div class='card-body'><span style='color: grey'>Created At: </span><b style='color: black'>{}</b></div>". format(tweet['created_at']))
+        response.write("<div class='card-body'>")
+        response.write("<div class='card-text'><span style='color: grey'>Sentiment: </span><b style='color: " + sentimentColor + "'><u>{}</u></b></div>". format(tweet['sentiment']))
+        # calculating polarity of text
+        '''
+        analysis = TextBlob(self.clean_tweet(tweet)) 
+        # set sentiment 
+        if analysis.sentiment.polarity >= threshold:
+            if analysis.sentiment.polarity > 0:
+                return 'positive'
+        '''
+        analysis = TextBlob(tweet['text'])
+        polarity = analysis.sentiment.polarity
+        subjectivity = analysis.sentiment.subjectivity
+        '''
+        if polarity in +ve, +ve tweet, else -ve tweet
+        '''
+        response.write("<div style='width: 80%; margin-left: 15px;'>")
+        response.write("<img style='max-width: 80%; position: absolute;' src='" + STATIC + "grey.jpg' height=5px width=100%>")
+        if tweet['sentiment'] != 'neutral':
+            if analysis.sentiment.polarity > 0.0:
+                response.write("<img style='max-width: 100%; position: relative;' src='" + STATIC + "green.png' height=5px width={}%>" . format(polarity * 100))
+                response.write("<br>Polarity: +{}%".format(polarity * 100))
+            elif analysis.sentiment.polarity < 0.0:
+                response.write("<img style='max-width: 100%; position: relative;' src='" + STATIC + "red.jpg' height=5px width={}%>" . format(abs(polarity) * 100))
+                response.write("<br>Polarity: {}%".format(polarity * 100))
+        else:
+            response.write("<br>Polarity: 0")
+        response.write("</div><br>")
+        if analysis.detect_language() != "en":
+            response.write("<div class='card-text'><span style='color: grey'>Language: </span><b style='color: black'>{}</b></div>". format(analysis.detect_language()))
+        response.write("<div class='card-text'><span style='color: grey'>Subjectivity (0 - objective | 1 - subjective): </span><b style='color: black'>{}</b></div>". format(subjectivity))
+        response.write("<div class='card-text'><span style='color: grey'>Username: </span><b style='color: black'>{}</b></div>". format(tweet['username']))
+        response.write("<div class='card-text'><span style='color: grey'>Created At: </span><b style='color: black'>{}</b></div>". format(tweet['created_at']))
+        response.write("</div>") # card-body
         response.write("<div class='card-footer'>")
         response.write("<h5><span style='color: grey'>Location: </span><b style='color: black'><u>{}</u></b></h5>". format(tweet['location']))
         response.write("<h5 style='float: right;'><span style='color: grey'>Likes: </span><b style='color: black'><u>{}</u></b></h5>". format(tweet['likes']))
         response.write("</div>")
         response.write("</div>")
-        response.write("<hr>")
+        # response.write("<hr>")
     response.write("<h4>Predictability: </h4><br>")
     if positiveLikesPercent == 0 and negativeLikesPercent == 0:
         response.write("<b>Not predictable!</b><br><br>")
@@ -188,7 +230,7 @@ def main(request):
     response.write("<hr><p>Top 5 Negative tweets:") 
     for tweet in ntweets[:5]: 
         response.write("<p style='color: red'> {}</p>".format(tweet['text']))
-    response.write("<br><hr><h3><a class='btn btn-info' href=/twitter/>Search Again..</a></h3></body>")
+    response.write("<hr><h3><a class='btn btn-info' href=/twitter/>Search Again..</a></h3></body>")
     return response
 
 # if __name__ == "__main__": 

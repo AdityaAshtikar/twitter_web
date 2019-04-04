@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  
+    <title>TweetAnalysis</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <style>
+      body {
+  padding: 0;
+  margin: 0;
+  background: #f2f6e9;
+}
+/*--- navigation bar ---*/
+.navbar {
+  background:rgb(14, 131, 209);
+}
+.nav-link,
+.navbar-brand {
+  color: #fff;
+  cursor: pointer;
+}
+.nav-link {
+  margin-right: 1em !important;
+}
+.nav-link:hover {
+  color: #000;
+}
+.navbar-collapse {
+  justify-content: flex-end;
+}
+img {
+  border-radius: 50%;
+}
+  </style>
+</head>
+<body>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<nav class="navbar navbar-expand-md">
+        <!--<a class="navbar-brand" href="#">Logo</a>-->
+        <IMG SRC="/static/twitterlogo2.jpg" ALT="TweetAnalysis" WIDTH=60 HEIGHT=40>
+            <a href="#" class="logo">TweetAnalysis</a>
+        <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="main-navigation">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="#home">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Contact</a>
+            </li>
+          </ul>
+        </div>
+        
+      </nav>
+      <header class="page-header header container-fluid">
+            <div class="overlay">
+                    <div class="description">
+                        
+                            <h1>Welcome to TweetAnalysis</h1>
+                            <p>
+
+                            </p>
+                            <a href="index" class="btn btn-primary">Analyze Tweets</a>
+                        </div>
+            </div>
+        </header>
+        <script src="main.js">
+        $(document).ready(function(){
+  $('.header').height($(window).height());
+})</script>
+<div class="container features">
+        <div class="row">
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <h3 class="feature-title"></h3>
+            <img src="/static/twitterlogo2.jpg" class="img-fluid">
+            <p></p>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <h3 class="feature-title"></h3>
+            <img src="Images/twitterimg3.jpeg" class="img-fluid">
+            <p></p>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12">    
+          </div>
+        </div> 
+        <h3 class="feature-title">Get in Touch!</h3>
+<div class="form-group">
+  <input type="text" class="form-control" placeholder="Name" name="">
+</div>
+<div class="form-group">
+  <input type="email" class="form-control" placeholder="Email Address" name="email">
+</div>
+<div class="form-group">
+  <textarea class="form-control" rows="4"></textarea>
+</div>
+<input type="submit" class="btn btn-primary btn-block" value="Send" name="">
+      </div>
+      <hr>
+      <footer class="page-footer">
+            <div class="container">
+              <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                <h6 class="text-uppercase font-weight-bold">Additional Information</h6>
+                <p></p>
+                <p></p>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-12">
+                <h6 class="text-uppercase font-weight-bold">Contact</h6>
+                <p>
+                <br/>anita@gmail.com
+                <br/>8839647003
+                <br/>9179719907</p>
+              </div>
+            </div>
+            <hr>
+            <div class="footer-copyright text-center">© 2019 Copyright: MyWebsite.com</div>
+          </footer>
+      
+</body>
+
+</html>
+© 2019 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
