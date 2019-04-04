@@ -164,7 +164,7 @@ def main(request):
         '''
         if polarity in +ve, +ve tweet, else -ve tweet
         '''
-        response.write("<div style='width: 80%; margin-left: 15px;'>")
+        response.write("<br><div style='width: 80%; margin-left: 15px;'>")
         response.write("<img style='max-width: 80%; position: absolute;' src='" + STATIC + "grey.jpg' height=5px width=100%>")
         if tweet['sentiment'] != 'neutral':
             if analysis.sentiment.polarity > 0.0:
@@ -179,6 +179,12 @@ def main(request):
         if analysis.detect_language() != "en":
             response.write("<div class='card-text'><span style='color: grey'>Language: </span><b style='color: black'>{}</b></div>". format(analysis.detect_language()))
         response.write("<div class='card-text'><span style='color: grey'>Subjectivity (0 - objective | 1 - subjective): </span><b style='color: black'>{}</b></div>". format(subjectivity))
+        # plotting subjectivity graph
+        response.write("<div style='width: 80%; margin-left: 15px;'>")
+        response.write("<img style='max-width: 80%; position: absolute;' src='" + STATIC + "grey.jpg' height=5px width=100%>")
+        response.write("<img style='max-width: 100%; position: relative;' src='" + STATIC + "blue.png' height=5px width={}%>" . format(subjectivity * 100))
+        response.write("<br>Subjectivity: {}%".format(subjectivity * 100))
+        response.write("</div><br>")
         response.write("<div class='card-text'><span style='color: grey'>Username: </span><b style='color: black'>{}</b></div>". format(tweet['username']))
         response.write("<div class='card-text'><span style='color: grey'>Created At: </span><b style='color: black'>{}</b></div>". format(tweet['created_at']))
         response.write("</div>") # card-body
